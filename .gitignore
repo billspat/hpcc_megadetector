@@ -1,0 +1,13 @@
+# used for batch processing, slurm outputs
+*.txt
+# default extension for slurm outputs
+*.out
+
+# location of photos
+output
+photo
+megadetector-gui
+
+# python
+__pycache__/
+*.py[cod]
