@@ -13,7 +13,7 @@ echo "running for $PHOTOFOLDER"
 # how many photos in this folder?
 PHOTOCOUNT=`ls -b $PHOTOFOLDER | wc -l`
 # estimate run time at 2 seconds per photo +  5 minute start up time
-EST_SECONDS=$(($PHOTOCOUNT*2+600))
+EST_SECONDS=`echo "$PHOTOCOUNT*2.5 +600" | bc`
 # convert  num of seconds to time  expression for the slurm -t parameter
 TIME_EXPR=$( date -d@$EST_SECONDS -u +%H:%M:%S)
 #  slurm batch submit command
@@ -21,4 +21,4 @@ cmd="sbatch --export=INPUT_FOLDER=$PHOTOFOLDER -t $TIME_EXPR --job-name=$(basena
 # show the command
 echo $cmd
 # submit
-$cmd
+# $cmd
