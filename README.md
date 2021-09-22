@@ -1,8 +1,6 @@
 # MNFI Whitetail Deer project 2020: Camera Trap photo id
 
-for Clay Wilton, MNFI
-
-DRAFT
+for Clay Wilton, [MNFI](https://mnfi.anr.msu.edu/)
 
 ## Overview
 
