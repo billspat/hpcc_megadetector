@@ -9,24 +9,20 @@ Run the "CameraTrap Megadetector" models based on TensorFlow (from Microsoft) on
 ## Install
 
 
-1. Get Tensorflow for GPU running on the HPC.   You will most likely need create a virtual env and load that. 
-   See the SB in this repo for an example name.  I'm sorry but I did not save the commands to install TF for this project.  
-   Please see the help desk for your local HPC.   
+1. Get Tensorflow for GPU running on the HPC.   You will most likely need create a virtual env and load that ( see https://wiki.hpcc.msu.edu/display/ITH/Using+Python+in+HPCC+with+virtualenv)   I'm sorry but I did not save the commands to install TF for this project. Please see the help desk for your local HPC.   Note about this, the name you use for your virtual env and 
+hence folder where python is installed doesn't matter, but you must edit the run_detector.sb to 
 
-2. Clone the poject  megadetector GUI somewhere (does not need to be in this folder).  https://github.com/petargyurov/megadetector-gui
+2. Clone the program "megadetector GUI" from github somewhere   https://github.com/petargyurov/megadetector-gui  Where  you 
+clone doesn't matter and does not need to be in this folder -  you will be copying something out into this folder.  The megadetector GUI project already has a reformulation of the original megadetector project, so you dodn't need the original 
+Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI project, but the python code in it is really helpful, so we will be extracting that.   This project/repository  does _not_ include that code so you must acquire it seperately.  
 
-The project above already has a reformulation of the original megadetector project,
-so you dodn't need the original Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI project, but the python code in it is really helpful, so we will be extracting that.   This repository here does _not_ include that code so you must get it and included it.  
-
-3. copy the python folder out of the "megadetector GUI" to a folder in this project. 
+3. copy the python folder out of the "megadetector GUI" to a folder in this project named `mdapi`. 
 
    `cp -r megadetector-gui/engine mdapi`
 
    Note the Python code we are copying automatically adds this folder to the python path so it can import it. 
 
-4. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here. 
-
-An Example model file is `md_v4.1.0.pb`
+4. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here.  An Example model file is `md_v4.1.0.pb`
 
 5. Make the main script 'executable' 
 
