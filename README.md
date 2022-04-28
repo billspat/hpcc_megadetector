@@ -30,21 +30,30 @@ source $HOME/python37tf/bin/activate
 pip intall -r requirements.txt
 ```
 
-1. Clone the program "megadetector GUI" from github somewhere   https://github.com/petargyurov/megadetector-gui  Where  you 
+2. Optional "megadetector GUI" Installation
+
+*Note this step is already done and part of this repository. You don't need to re-download.  The instructions are included for completeness*
+
+Clone the program "megadetector GUI" from github somewhere   https://github.com/petargyurov/megadetector-gui  Where  you 
 clone doesn't matter and does not need to be in this folder -  you will be copying something out into this folder.  The megadetector GUI project already has a reformulation of the original megadetector project, so you dodn't need the original 
 Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI project, but the python code in it is really helpful, so we will be extracting that.   This project/repository  does _not_ include that code so you must acquire it seperately.  
 
-1. copy the 'engine'  folder only out of the "megadetector GUI" to a folder in this project named `mdapi`. 
+Copy the 'engine'  folder only out of the "megadetector GUI" to a folder in this project named `mdapi`. 
 
    `cp -r megadetector-gui/engine mdapi`
 
     
-   Note the Python code we are copying automatically adds this folder to the python path so it can import it.  In addition
+Note our script assumes the folder is mdapi/
 
 
-1. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here.  An Example model file is `md_v4.1.0.pb`
+3. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here.  An Example model file is `md_v4.1.0.pb`   To download on the HPCC with a browser consie the OnDemand Linux desktop service, or in the terminal a command like this 
 
-1. Make the main script 'executable' 
+```bash
+DOWNLOAD_URL=https://lilablobssc.blob.core.windows.net/models/camera_traps/megadetector/md_v4.1.0/md_v4.1.0.pb
+curl $DOWNLOAD_URL -o models/md_v4.1.0.pb
+```
+
+4. Make the main script 'executable' 
 
    The main script should be able to run directy from the command line (it may not be depending on how you copied this 
    program to your HPC).   For those new to linux, use the command like
@@ -58,9 +67,8 @@ Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI pr
 
 1. create folders "photos" to hold input photos and "output" for the output (marked up photos)
 
-2. put your own folders full of photos as subdirectories in the `photos` directory you created above. 
-
-   The scripts here will work through each sub-folder of the `photos` folder so that you can organize the photos by camera. 
+2. put your own folders full of photos as subdirectories in the `photos` directory you created above.  This allows you to loop through 
+all the subfolders of photos and process them.   The scripts here will work through each sub-folder of the `photos` folder so that you can organize the photos by camera. 
 
  
 ## Run
@@ -100,12 +108,12 @@ Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI pr
 ### automated run
 
 For automatic setting of walltime, input folder, output folders for a slurm job, for a folder of photos under the `photos` folder
-(e.g. "photos_x" ) in the photos dir, run she shell script with the folder as the first parameter as follows
+(e.g. `camera_a` ) in the photos dir, run she shell script with the folder as the first parameter as follows
    
 ```
 # set this to the location of your virtual env install where you have python and tensorflow 
 export PYTHON_FOLDER=$HOME/my_tensorflow_python_folder 
-./start_detector_job.sh photos/folderX
+./start_detector_job.sh photos/camera_a
 ```
 
 this will launch a single slurm job to process the photos in that folder.  It requires a K80 GPU as was avaialble in 2021. You may need to adjust to use current node and GPU names on the HPC.  Note this slurm script is written for the MSU HPCC. 
