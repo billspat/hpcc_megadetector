@@ -1,3 +1,5 @@
+*This section is a fork of the 'engine' folder of the excellent project https://github.com/petargyurov/megadetector-gui*
+
 # Megadetector API
 
 At its core, this repository is a fork of the Megadetector project that sits within
