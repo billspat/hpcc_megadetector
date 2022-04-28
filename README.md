@@ -1,30 +1,50 @@
-# MNFI Whitetail Deer project 2020: Camera Trap photo id
-
-for Clay Wilton, [MNFI](https://mnfi.anr.msu.edu/)
+# MegaDetector on the MSU HPCC
 
 ## Overview
 
-Run the "CameraTrap Megadetector" models based on TensorFlow (from Microsoft) on ~220K photos from 2020 to identify which have animals.
+Written for Clay Wilton, [MNFI](https://mnfi.anr.msu.edu/) Whitetail Deer project 2020/21Camera Trap photo id
+
+The goal is to run the "CameraTrap Megadetector" models on the MSU HPCC, originnally to process  ~220K photos from 2020 to 
+identify photos with White Tail deer.    The "CameraTrap Megadetector"  project is from Microsoft, https://github.com/microsoft/CameraTraps/blob/main/megadetector.md and is based on TensorFlow (from Google).   The code here uses someone else's adaption of 
+the Megadetector project and hacked to work on the MSU HPCC.   In short, it process folders full of photos in batch using the MSU HPCC's GPU nodes.  
 
 ## Install
 
+1. Get Tensorflow for GPU running on the HPC.   Note that I don't recall if this code worked with Tensorflow 1.15 or version 2.   This was not straightforward, I'm sorry but I did not save the commands to install TF for this project. Please see the help desk for your local HPC.  You will most likely need create a python virtual env, install tensorflow into that virtual env.  ( see https://wiki.hpcc.msu.edu/display/ITH/Using+Python+in+HPCC+with+virtualenv)    The script that runs the 
+megadector code loads a virtual env by name.   The name and location you use for your virtual env doesn't matter (for example could use $HOME/python/tensorflow), but you must edit the file `run_detector.sb` to match.  
 
-1. Get Tensorflow for GPU running on the HPC.   You will most likely need create a virtual env and load that ( see https://wiki.hpcc.msu.edu/display/ITH/Using+Python+in+HPCC+with+virtualenv)   I'm sorry but I did not save the commands to install TF for this project. Please see the help desk for your local HPC.   Note about this, the name you use for your virtual env and 
-hence folder where python is installed doesn't matter, but you must edit the run_detector.sb to 
+It worked with Python 3.7  modules on HPCC.  to create a virtual env, use somethign like this
 
-2. Clone the program "megadetector GUI" from github somewhere   https://github.com/petargyurov/megadetector-gui  Where  you 
+
+```Bash
+# on the MSU HPCC
+# load python module known to work with cuda and tensorflow
+ml  GNU/8.2.0-2.31.1 Python/3.7.2  CUDA/10.1.105 cuDNN/7.6.4.38
+# create new personal environment for python 
+virtualenv $HOME/python37tf
+
+# to use this python with tensorflow installed
+source $HOME/python37tf/bin/activate
+
+# this installs python packages sneeded 
+pip intall -r requirements.txt
+```
+
+1. Clone the program "megadetector GUI" from github somewhere   https://github.com/petargyurov/megadetector-gui  Where  you 
 clone doesn't matter and does not need to be in this folder -  you will be copying something out into this folder.  The megadetector GUI project already has a reformulation of the original megadetector project, so you dodn't need the original 
 Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI project, but the python code in it is really helpful, so we will be extracting that.   This project/repository  does _not_ include that code so you must acquire it seperately.  
 
-3. copy the python folder out of the "megadetector GUI" to a folder in this project named `mdapi`. 
+1. copy the 'engine'  folder only out of the "megadetector GUI" to a folder in this project named `mdapi`. 
 
    `cp -r megadetector-gui/engine mdapi`
 
-   Note the Python code we are copying automatically adds this folder to the python path so it can import it. 
+    
+   Note the Python code we are copying automatically adds this folder to the python path so it can import it.  In addition
 
-4. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here.  An Example model file is `md_v4.1.0.pb`
 
-5. Make the main script 'executable' 
+1. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here.  An Example model file is `md_v4.1.0.pb`
+
+1. Make the main script 'executable' 
 
    The main script should be able to run directy from the command line (it may not be depending on how you copied this 
    program to your HPC).   For those new to linux, use the command like
@@ -44,11 +64,47 @@ Megadetector code.  Also we won't be using the GUI part of the Megadector-GUI pr
 
  
 ## Run
+
+### Scripts
+
+   1.  `run_detector.py`  simple python code to check GPU status and invoke detector on a folder of photos
+   2.  `run_detector.sb`  Slurm submission script to set variables, load modules and run `run_detector.py`
+   3. `start_detector_job.sh`  Shell (bash) script to count photos in a folder to set walltime, input & output folders for `run_detector.sb`
  
-1. for each folder (e.g. "folderX" ) in the photos dir, run the `start_detector_job.sh` 
+### Test Run
+
+   To test that everything works, you can run this in an 'interactive job' ( ) on a node with a GPU.   First put a handful of photos in a folder, let's call the folder `testphotos`  If all is installed, you can process this folder like this: 
+
+    ```Bash
+    # start an 'interactive job' to use a GPU node for 1 hour
+    salloc -c 2 --time=01:00:00 --mem=10gb --gres=gpu:k80:1
+    
+    # wait for resources to allocate
+    
+    # after the job starts and you are logged in, activate the python environment
+    # assume your python is in your home dir in folder /python37tf
+    source $HOME/python37tf/bin/activate
+    
+    # run the detector script on the folder testphotos, and save into testoutput
+    python run_detector.py testphotos testoutput
+    
+    # if you see the output  Successfully opened dynamic library libcudart.so.10.1 then tensorflow is using the gpu
+    # review the contents of testoutput to see if it worked
+    
+    # when finished testing, exit from the GPU node
+    exit
+    
+    ```
+
+
+### automated run
+
+For automatic setting of walltime, input folder, output folders for a slurm job, for a folder of photos under the `photos` folder
+(e.g. "photos_x" ) in the photos dir, run she shell script with the folder as the first parameter as follows
    
 ```
-#in this folder main folder
+# set this to the location of your virtual env install where you have python and tensorflow 
+export PYTHON_FOLDER=$HOME/my_tensorflow_python_folder 
 ./start_detector_job.sh photos/folderX
 ```
 
@@ -57,11 +113,12 @@ this will launch a single slurm job to process the photos in that folder.  It re
 This shell script sets the variable  `$INPUT_FOLDER` which is then used by the slurm script.  Slurm scripts need a time-to-run parameters ("wall time") and this shell script assumes it will take ~ 2 secs per photo to process, so sets time = 2 * number of photos in seconds.   Adjust that if the job does not complete in time to process all the photos. 
 
 
-2. To launch jobs for every photos sub-folder 
+### To launch jobs for every photos sub-folder 
 
 To launch a job (e.g. add to the HPC queue) for every subdir in your photos folder automaticaly, you could use a bash command as follows 
 
 ```sh
+export PYTHON_FOLDER=/path/to/pythonenv # replace with your folder above
 for d in `find photos -type d`; do ./start_detector_job.sh $d; done
 ```
 
