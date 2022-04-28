@@ -8,6 +8,8 @@ The goal is to run the "CameraTrap Megadetector" models on the MSU HPCC, originn
 identify photos with White Tail deer.    The "CameraTrap Megadetector"  project is from Microsoft, https://github.com/microsoft/CameraTraps/blob/main/megadetector.md and is based on TensorFlow (from Google).   The code here uses someone else's adaption of 
 the Megadetector project and hacked to work on the MSU HPCC.   In short, it process folders full of photos in batch using the MSU HPCC's GPU nodes.  
 
+This project borrows heavily from https://github.com/petargyurov/megadetector-gui and would not work without it.  
+
 ## Install
 
 1. Get Tensorflow for GPU running on the HPC.   Note that I don't recall if this code worked with Tensorflow 1.15 or version 2.   This was not straightforward, I'm sorry but I did not save the commands to install TF for this project. Please see the help desk for your local HPC.  You will most likely need create a python virtual env, install tensorflow into that virtual env.  ( see https://wiki.hpcc.msu.edu/display/ITH/Using+Python+in+HPCC+with+virtualenv)    The script that runs the 
