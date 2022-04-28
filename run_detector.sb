@@ -12,9 +12,9 @@
 USAGE='PHOTOFOLDER=path/to/photos; sbatch --export=INPUT_FOLDER=$PHOTOFOLDER --job-name=detector-$(basename $PHOTOFOLDER) run_detector.sb'
 
 # modify this for your own python environment location
-if [ -z ${PYTHON_FOLDER} ]; then 
-    echo "using python folder ~/local/python/py37tf/ "
-    PYTHON_FOLDER=~/local/python/py37tf/
+if [ -z ${PYTHON_FOLDER} ]; then     
+    PYTHON_FOLDER=$HOME/python37tf/
+    echo "using python folder $PYTHON_FOLDER"
 fi
 
 if [ -z "$INPUT_FOLDER" ]; then 
@@ -34,7 +34,7 @@ ml purge
 ml  GNU/8.2.0-2.31.1 Python/3.7.2  CUDA/10.1.105 cuDNN/7.6.4.38
 
 # activate python environment that has Tensorflow installed
-source $PYTHON_FOLDER/activate
+source $PYTHON_FOLDER/bin/activate
 
 python run_detector.py  $INPUT_FOLDER $OUTPUT_FOLDER
 
