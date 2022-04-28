@@ -16,13 +16,18 @@ Details need to be added :
 1. Get Tensorflow for GPU running on the HPC.   Good luck.   You will most like need create a virtual env and load that. 
    See the SB in this repo for an example name.   I did not save the commands to install TF and I know I"ll be sorry later. 
 
-2. Clone the poject  megadetector GUI somewhere (does not need to be in this folder).   This has a reformulation of the megadetector,
-so you dodn't need the original Megadetector code, and we won't be using the GUI part. 
+2. Clone the poject  megadetector GUI somewhere (does not need to be in this folder).  https://github.com/petargyurov/megadetector-gui
+This has a reformulation of the original megadetector project,
+so you dodn't need the original Megadetector code.  Also wewe won't be using the GUI part of the Megadector-GUI project, but the python code in it is really helpful
 
-3. copy the python folder out of the "megadetector GUI" to a folder in this project called ?mdapi?  
+3. copy the python folder out of the "megadetector GUI" to a folder in this project. 
+
+   `cp -r megadetector-gui/engine mdapi`
+
    Note the Python code adds this folder to the python path so it can import it. 
 
-4. download the models from the original Megadetector project to the "models" in this repository (URL?)
+4. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here. 
+An Example model file is `md_v4.1.0.pb`
 
 5. create folders "photos" to hold input photos and "output" for the output
 
