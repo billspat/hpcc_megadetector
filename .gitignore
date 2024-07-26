@@ -11,3 +11,7 @@ megadetector-gui
 # python
 __pycache__/
 *.py[cod]
+
+# virtual environments
+.venv
+venv
