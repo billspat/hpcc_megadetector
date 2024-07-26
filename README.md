@@ -12,29 +12,44 @@ This project borrows heavily from https://github.com/petargyurov/megadetector-gu
 
 ## Install
 
-1. Get Tensorflow for GPU running on the HPC.   Note that I don't recall if this code worked with Tensorflow 1.15 or version 2.   This was not straightforward, I'm sorry but I did not save the commands to install TF for this project. Please see the help desk for your local HPC.  You will most likely need create a python virtual env, install tensorflow into that virtual env.  ( see https://wiki.hpcc.msu.edu/display/ITH/Using+Python+in+HPCC+with+virtualenv)    The script that runs the 
-megadector code loads a virtual env by name.   The name and location you use for your virtual env doesn't matter (for example could use $HOME/python/tensorflow), but you must edit the file `run_detector.sb` to match.  
+1. Install python packages including Tensorflow for GPU running on the HPC.   
 
-It worked with Python 3.7  modules on HPCC.  to create a virtual env, use somethign like this
+The name and location you use for your virtual env doesn't matter (for example could use $HOME/python/tensorflow), but you must edit the file `run_detector.sb` to match.  
+
+*Update for July 2024 after the MSU HPC Ubuntu upgrade:*  It worked with Python 3.8 available via MSU HPCC modules.  
+
+To create a virtual env, use something like this:
 
 
 ```Bash
-# on the MSU HPCC
+# on the MSU HPCC - July 2024, post UBUNTU upgrade
+
 # load python module known to work with cuda and tensorflow
-ml  GNU/8.2.0-2.31.1 Python/3.7.2  CUDA/10.1.105 cuDNN/7.6.4.38
-# create new personal environment for python 
-virtualenv $HOME/python37tf
+module purge
+module load Python/3.8.6-GCCcore-10.2.0 cuDNN/8.9.2.26-CUDA-12.1.1
+
+# create new personal environment for python in this same folder
+# change the VENVDIR to anywhere you have access to that makes sense
+# common practice is to put it in the same folder as the code
+export VENVDIR=.venv
+python -m venv $VENVDIR
 
 # to use this python with tensorflow installed
-source $HOME/python37tf/bin/activate
+source $VENVDIR/bin/activate
 
-# this installs python packages sneeded 
+# this installs python packages needed 
+# note that this installs older version of Tensorflow and others 
+# known to work with this version of the megadetector model and code 
 pip intall -r requirements.txt
 ```
 
-2. Optional "megadetector GUI" Installation
+2. **Optional** "megadetector GUI" Installation
 
-*Note this step is already done and part of this repository. You don't need to re-download.  The instructions are included for completeness*
+This step can be skipped
+
+*Note The original megadector GUI development stopped in 2022 as the megadetector project has channged significantly. *
+
+*Also, this step is already done and part of this repository. You don't need to re-download.  The instructions are included for completeness*
 
 Clone the program "megadetector GUI" from github somewhere   https://github.com/petargyurov/megadetector-gui  Where  you 
 clone doesn't matter and does not need to be in this folder -  you will be copying something out into this folder.  The megadetector GUI project already has a reformulation of the original megadetector project, so you dodn't need the original 
@@ -45,10 +60,15 @@ Copy the 'engine'  folder only out of the "megadetector GUI" to a folder in this
    `cp -r megadetector-gui/engine mdapi`
 
     
-Note our script assumes the folder is mdapi/
+Note our simple script assumes the folder is mdapi/
 
 
 3. download the models from the original Megadetector project from https://github.com/microsoft/CameraTraps/blob/master/megadetector.md#download-links into the "models" folder here.  An Example model file is `md_v4.1.0.pb`   To download on the HPCC with a browser consie the OnDemand Linux desktop service, or in the terminal a command like this 
+
+A model file is **required** for this program to operate
+
+**NOTE**: *this model is no longer available at this address (in July 2024) and the following code will fail.  Stay tuned for a replace, or find a previously-downloaded
+model file*
 
 ```bash
 DOWNLOAD_URL=https://lilablobssc.blob.core.windows.net/models/camera_traps/megadetector/md_v4.1.0/md_v4.1.0.pb
